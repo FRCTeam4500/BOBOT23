@@ -5,4 +5,5 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public interface Camera extends Subsystem, Sendable {
     public void createSimpleStream();
+    public void createAprilTagStream();
 }

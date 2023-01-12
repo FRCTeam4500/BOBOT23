@@ -136,11 +136,11 @@ public class PrimaryRobotContainer implements RobotContainer{
         Shuffleboard.getTab("Climber").add("climber", climber);
         
 
-        climberZero.whenPressed(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_ZERO_ANGLE));
+        climberZero.toggleOnTrue(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_ZERO_ANGLE));
 
-        climberUp.whenPressed(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_UP_ANGLE).alongWith(new InstantCommand(() -> {turret.setEnabled(false);})));
+        climberUp.toggleOnTrue(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_UP_ANGLE).alongWith(new InstantCommand(() -> {turret.setEnabled(false);})));
 
-        climberClimb.whenPressed(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_CLIMB_ANGLE));
+        climberClimb.toggleOnTrue(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_CLIMB_ANGLE));
 
     }
 
@@ -163,7 +163,7 @@ public class PrimaryRobotContainer implements RobotContainer{
         limitSwerveSpeed.whenPressed(() -> {swerveCommand.limitSpeed = true; turretLights.setCurrentRoutine(Lights.Routines.bigblueorange);});
         limitSwerveSpeed.whenReleased(() -> {swerveCommand.limitSpeed = false; resetLights();});
 
-        resetGyro.whenPressed(new InstantCommand(() -> {swerve.resetRobotAngle();}));
+        resetGyro.toggleOnTrue(new InstantCommand(() -> {swerve.resetRobotAngle();}));
 
 
         swerve.setDefaultCommand(swerveCommand);
@@ -176,9 +176,9 @@ public class PrimaryRobotContainer implements RobotContainer{
     }
 
     void configureIntakeAndCameraAndArm() {
-        intakeButton.whenPressed(new ArmSetAngleCommand(arm, ArmConstants.ARM_DOWN_ANGLE)
+        intakeButton.toggleOnTrue(new ArmSetAngleCommand(arm, ArmConstants.ARM_DOWN_ANGLE)
                 .alongWith(new IntakeRunCommand(intake, IntakeConstants.intakeRunSpeed)));
-        intakeButton.whenReleased(
+        intakeButton.toggleOnFalse(
             new ArmSetAngleCommand(arm, ArmConstants.ARM_UP_ANGLE).alongWith(
             new IntakeRunCommand(intake, 0))
                         

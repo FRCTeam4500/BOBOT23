@@ -66,7 +66,7 @@ public class OdometricSwerve extends KinematicSwerve implements PathFollowingSwe
         resetRobotAngle();
         odometry.resetPosition(new Rotation2d(gyro.getAngle()), getSwerveModulePositions(), new Pose2d(translation, new Rotation2d()));
     }
-    public void resetPose(Pose2d pose){
+    public void resetPose(Pose2d pose) {
         resetRobotAngle(pose.getRotation().getRadians());
         odometry.resetPosition(new Rotation2d(gyro.getAngle()), getSwerveModulePositions(), pose);
     }
@@ -74,17 +74,17 @@ public class OdometricSwerve extends KinematicSwerve implements PathFollowingSwe
         updateOdometry();
     }
     public void enableWheelWrap(boolean enable){
-        for(var module : odometricWheelModules){
+        for(var module : odometricWheelModules) {
             module.wheelWrapEnabled = enable;
         }
     }
     public void enableWheelInversion(boolean enable){
-        for(var module : odometricWheelModules){
+        for(var module : odometricWheelModules) {
             module.wheelInversionEnabled = enable;
         }
     }
-    public void coast(){
-        for(var module : odometricWheelModules){
+    public void coast() {
+        for(var module : odometricWheelModules) {
             module.coast();
         }
     }
