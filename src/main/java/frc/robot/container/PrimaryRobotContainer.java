@@ -7,9 +7,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.routines.*;
 import frc.robot.dashboard.DashboardMessageDisplay;
@@ -148,8 +146,8 @@ public class PrimaryRobotContainer implements RobotContainer{
         swerveCommand = new TriModeSwerveCommand(swerve, driveStick, info, vision, turret, messages);
         swerveCommand.controlMode = ControlMode.FieldCentric;
 
-        switchDriveModeRobotCentric.whenPressed(() -> {swerveCommand.controlMode = ControlMode.RobotCentric; turretLights.setCurrentRoutine(Lights.Routines.blueorangereverse);});
-        switchDriveModeRobotCentric.whenReleased(() -> {swerveCommand.controlMode = ControlMode.FieldCentric; resetLights();});
+        //switchDriveModeRobotCentric.toggleOnTrue(() -> swerveCommand.controlMode = ControlMode.RobotCentric; new InstantCommand(turretLights.setCurrentRoutine(Lights.Routines.blueorangereverse);));
+        //switchDriveModeRobotCentric.toggleOnFalse(() -> {swerveCommand.controlMode = ControlMode.FieldCentric; resetLights();});
 
         lockSwerveRotationButton.whenPressed(() -> {swerveCommand.lockRotation = true; turretLights.setCurrentRoutine(Lights.Routines.stopblueorange);});
         lockSwerveRotationButton.whenReleased(() -> {swerveCommand.lockRotation = false; resetLights();});

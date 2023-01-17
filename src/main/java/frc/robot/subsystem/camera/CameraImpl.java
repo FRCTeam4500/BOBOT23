@@ -12,8 +12,11 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
+
+import edu.wpi.first.apriltag.AprilTagDetection;
 import edu.wpi.first.apriltag.AprilTagDetector;
 import edu.wpi.first.apriltag.AprilTagDetector.Config;
+import edu.wpi.first.apriltag.AprilTagDetector.QuadThresholdParameters;
 import edu.wpi.first.wpilibj.Timer;
 
 import java.util.HashSet;
@@ -55,21 +58,21 @@ public class CameraImpl {
                 Mat mat = new Mat();
                 Mat grayMat = new Mat();
 
-                var pt0 = new Point(); // Point on apriltag, RENAME later based on which these are
-                var pt1 = new Point();
-                var pt2 = new Point();
-                var pt3 = new Point();
-                var center = new Point(); // Thankfully we do not have to calculate this
-                var red = new Scalar(0, 0, 255); // Color
-                var green = new Scalar(0, 255, 0); // Color
+                Point pt0 = new Point(); // Point on apriltag, RENAME later based on which these are
+                Point pt1 = new Point();
+                Point pt2 = new Point();
+                Point pt3 = new Point();
+                Point center = new Point(); // Thankfully we do not have to calculate this
+                Scalar red = new Scalar(0, 0, 255); // Color
+                Scalar green = new Scalar(0, 255, 0); // Color
 
-                var aprilTagDetector = new AprilTagDetector();
+                AprilTagDetector aprilTagDetector = new AprilTagDetector();
 
-                var config = aprilTagDetector.getConfig();
+                Config config = aprilTagDetector.getConfig();
                 config.quadSigma = 0.8f; // Pretty much decimated for us, makes runtime a teeny tiny bit faster (we need it)
                 aprilTagDetector.setConfig(config);
 
-                var quadThreshParams = aprilTagDetector.getQuadThresholdParameters();
+                QuadThresholdParameters quadThreshParams = aprilTagDetector.getQuadThresholdParameters();
                 quadThreshParams.minClusterPixels = 250;
                 quadThreshParams.criticalAngle *= 5; // default is 10
                 quadThreshParams.maxLineFitMSE *= 1.5;
@@ -77,9 +80,9 @@ public class CameraImpl {
 
                 aprilTagDetector.addFamily("tag16h5"); // Specific to field tags
 
-                var timer = new Timer();
+                Timer timer = new Timer();
                 timer.start();
-                var count = 0; // For debugging purposes, need to check if image needs to be decimated more.
+                int count = 0; // For debugging purposes, need to check if image needs to be decimated more.
 
                 while (!Thread.interrupted()) {
                     if (cvSink.grabFrame(mat) == 0) {
@@ -89,7 +92,7 @@ public class CameraImpl {
 
                     Imgproc.cvtColor(mat, grayMat, Imgproc.COLOR_RGB2GRAY);
 
-                    var results = aprilTagDetector.detect(grayMat);
+                    AprilTagDetection[] results = aprilTagDetector.detect(grayMat);
 
                     var set = new HashSet<>();
 

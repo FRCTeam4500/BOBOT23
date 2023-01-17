@@ -42,7 +42,7 @@ public class OdometricWheelModule extends KinematicWheelModule {
     }
 
     public SwerveModulePosition getPosition() {
-        return new SwerveModulePosition(driveMotor.getSelectedSensorPosition(), new Rotation2d(angleMotor.getAngle() * angleRotsPerMotorRots));
+        return new SwerveModulePosition((driveMotor.getSelectedSensorPosition()/2048/5.3625)*(2*Math.PI*0.0381), new Rotation2d(angleMotor.getAngle() * angleRotsPerMotorRots));
     }
 
     @Override
