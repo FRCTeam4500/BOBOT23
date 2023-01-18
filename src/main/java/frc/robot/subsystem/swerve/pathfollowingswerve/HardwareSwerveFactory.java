@@ -2,6 +2,9 @@ package frc.robot.subsystem.swerve.pathfollowingswerve;
 
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.kauailabs.navx.frc.AHRS;
+import com.kauailabs.navx.frc.AHRS.SerialDataType;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.I2C;
 import frc.robot.component.hardware.AHRSAngleGetterComponent;

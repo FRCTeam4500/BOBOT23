@@ -36,106 +36,99 @@ public class CameraImpl {
 
     /** creates a simple or complex stream based on type defined in constructor */
     public void start() {
-        createSimpleStream();
+        // createSimpleStream();
         createAprilTagStream();
     }
 
-    // starts a camera server automaically without changing any default values
-    public void createSimpleStream() {
+    public void createAprilTagStream() {
+        /* For comparison with AprilTagStream, can be removed if nessesary */
         UsbCamera camera = CameraServer.startAutomaticCapture(id);
         camera.setResolution(CameraConstants.width, CameraConstants.height);
         camera.setFPS(CameraConstants.fps);
 
-        
-    }
+        CvSink cvSink = CameraServer.getVideo();
+        CvSource outputStream = CameraServer.putVideo("AprilTags", CameraConstants.width, CameraConstants.height);
 
-    public void createAprilTagStream() {
-        new Thread(
-            () -> {
-                CvSink cvSink = CameraServer.getVideo();
-                CvSource outputStream = CameraServer.putVideo("AprilTags", CameraConstants.width, CameraConstants.height);
+        Mat mat = new Mat();
+        Mat grayMat = new Mat();
 
-                Mat mat = new Mat();
-                Mat grayMat = new Mat();
+        Point pt0 = new Point(); // Point on apriltag, RENAME later based on which these are
+        Point pt1 = new Point();
+        Point pt2 = new Point();
+        Point pt3 = new Point();
+        Point center = new Point(); // Thankfully we do not have to calculate this
+        Scalar red = new Scalar(0, 0, 255); // Color
+        Scalar green = new Scalar(0, 255, 0); // Color
 
-                Point pt0 = new Point(); // Point on apriltag, RENAME later based on which these are
-                Point pt1 = new Point();
-                Point pt2 = new Point();
-                Point pt3 = new Point();
-                Point center = new Point(); // Thankfully we do not have to calculate this
-                Scalar red = new Scalar(0, 0, 255); // Color
-                Scalar green = new Scalar(0, 255, 0); // Color
+        AprilTagDetector aprilTagDetector = new AprilTagDetector();
 
-                AprilTagDetector aprilTagDetector = new AprilTagDetector();
+        Config config = aprilTagDetector.getConfig();
+        config.quadSigma = 0.8f; // Pretty much decimated for us, makes runtime a teeny tiny bit faster (we need it)
+        aprilTagDetector.setConfig(config);
 
-                Config config = aprilTagDetector.getConfig();
-                config.quadSigma = 0.8f; // Pretty much decimated for us, makes runtime a teeny tiny bit faster (we need it)
-                aprilTagDetector.setConfig(config);
+        QuadThresholdParameters quadThreshParams = aprilTagDetector.getQuadThresholdParameters();
+        quadThreshParams.minClusterPixels = 250;
+        quadThreshParams.criticalAngle *= 5; // default is 10
+        quadThreshParams.maxLineFitMSE *= 1.5;
+        aprilTagDetector.setQuadThresholdParameters(quadThreshParams);
 
-                QuadThresholdParameters quadThreshParams = aprilTagDetector.getQuadThresholdParameters();
-                quadThreshParams.minClusterPixels = 250;
-                quadThreshParams.criticalAngle *= 5; // default is 10
-                quadThreshParams.maxLineFitMSE *= 1.5;
-                aprilTagDetector.setQuadThresholdParameters(quadThreshParams);
+        aprilTagDetector.addFamily("tag16h5"); // Specific to field tags
 
-                aprilTagDetector.addFamily("tag16h5"); // Specific to field tags
+        Timer timer = new Timer();
+        timer.start();
+        int count = 0; // For debugging purposes, need to check if image needs to be decimated more.
 
-                Timer timer = new Timer();
-                timer.start();
-                int count = 0; // For debugging purposes, need to check if image needs to be decimated more.
+        while (!Thread.interrupted()) {
+            if (cvSink.grabFrame(mat) == 0) {
+                outputStream.notifyError(cvSink.getError());
+                continue;
+            }
 
-                while (!Thread.interrupted()) {
-                    if (cvSink.grabFrame(mat) == 0) {
-                        outputStream.notifyError(cvSink.getError());
-                        continue;
-                    }
+            Imgproc.cvtColor(mat, grayMat, Imgproc.COLOR_RGB2GRAY);
 
-                    Imgproc.cvtColor(mat, grayMat, Imgproc.COLOR_RGB2GRAY);
+            AprilTagDetection[] results = aprilTagDetector.detect(grayMat);
 
-                    AprilTagDetection[] results = aprilTagDetector.detect(grayMat);
+            var set = new HashSet<>();
 
-                    var set = new HashSet<>();
+            for (var result: results) {
+                count += 1;
+                pt0.x = result.getCornerX(0); // Corner Index X
+                pt1.x = result.getCornerX(1);
+                pt2.x = result.getCornerX(2);
+                pt3.x = result.getCornerX(3);
 
-                    for (var result: results) {
-                        count += 1;
-                        pt0.x = result.getCornerX(0); // Corner Index X
-                        pt1.x = result.getCornerX(1);
-                        pt2.x = result.getCornerX(2);
-                        pt3.x = result.getCornerX(3);
+                pt0.y = result.getCornerY(0); // Corner Index Y
+                pt1.y = result.getCornerY(1);
+                pt2.y = result.getCornerY(2);
+                pt3.y = result.getCornerY(3);
 
-                        pt0.y = result.getCornerY(0); // Corner Index Y
-                        pt1.y = result.getCornerY(1);
-                        pt2.y = result.getCornerY(2);
-                        pt3.y = result.getCornerY(3);
+                center.x = result.getCenterX(); // Lucky team 4500 having wrappers around everything lmao
+                center.y = result.getCenterY();
 
-                        center.x = result.getCenterX(); // Lucky team 4500 having wrappers around everything lmao
-                        center.y = result.getCenterY();
+                set.add(result.getId()); // ID match done for us
 
-                        set.add(result.getId()); // ID match done for us
+                /* Draw Box around the tag, you feel me? */
+                Imgproc.line(mat, pt0, pt1, red, 5);
+                Imgproc.line(mat, pt1, pt2, red, 5);
+                Imgproc.line(mat, pt2, pt3, red, 5);
+                Imgproc.line(mat, pt3, pt0, red, 5);
 
-                        /* Draw Box around the tag, you feel me? */
-                        Imgproc.line(mat, pt0, pt1, red, 5);
-                        Imgproc.line(mat, pt1, pt2, red, 5);
-                        Imgproc.line(mat, pt2, pt3, red, 5);
-                        Imgproc.line(mat, pt3, pt0, red, 5);
+                Imgproc.circle(mat, center, 4, green); // Circle in the center of the tag
+                Imgproc.putText(mat, String.valueOf(result.getId()), pt2, Imgproc.FONT_HERSHEY_SIMPLEX, 2, green, 7); // ID of the tag
 
-                        Imgproc.circle(mat, center, 4, green); // Circle in the center of the tag
-                        Imgproc.putText(mat, String.valueOf(result.getId()), pt2, Imgproc.FONT_HERSHEY_SIMPLEX, 2, green, 7); // ID of the tag
+            };
 
-                    };
+            for (var id : set){
+                System.out.println("Tag: " + String.valueOf(id)); // Debug First, Program Later
+            }
 
-                    for (var id : set){
-                        System.out.println("Tag: " + String.valueOf(id)); // Debug First, Program Later
-                    }
+            if (timer.advanceIfElapsed(1.0)){
+                System.out.println("detections per second: " + String.valueOf(count)); // Where count is used :)
+                count = 0;
+            }
 
-                    if (timer.advanceIfElapsed(1.0)){
-                        System.out.println("detections per second: " + String.valueOf(count)); // Where count is used :)
-                        count = 0;
-                    }
-
-                    outputStream.putFrame(mat);
-                }
-                aprilTagDetector.close();
-            });
-    }
+            outputStream.putFrame(mat);
+        }
+        aprilTagDetector.close();
+    };
 }

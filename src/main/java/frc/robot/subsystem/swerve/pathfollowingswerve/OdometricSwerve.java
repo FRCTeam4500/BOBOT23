@@ -29,8 +29,8 @@ public class OdometricSwerve extends KinematicSwerve implements PathFollowingSwe
     private double lastTime;
     public OdometricSwerve(GyroComponent gyro, OdometricWheelModule... wheelModules) {
         super(gyro, wheelModules);
-        odometry = new SwerveDriveOdometry(kinematics, new Rotation2d(gyro.getAngle()), getSwerveModulePositions());
         odometricWheelModules = wheelModules;
+        odometry = new SwerveDriveOdometry(kinematics, new Rotation2d(gyro.getAngle()), getSwerveModulePositions());
     }
     private void updateOdometry(){
         lastTime = Timer.getFPGATimestamp();
