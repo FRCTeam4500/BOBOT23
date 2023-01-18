@@ -226,12 +226,12 @@ public class PrimaryRobotContainer implements RobotContainer{
         tab.add("Distance", new DashboardNumberDisplay("Distance", () -> VisionDistanceCalculator.calculateDistance(vision)));
     }
 
-    void configureLights(){
+    void configureLights() {
         turretLights.setCurrentRoutine(Lights.Routines.blueorbit);
         Shuffleboard.getTab("Light").add("light", turretLights);
     }
 
-    void configureAutonomous(){
+    void configureAutonomous() {
         autonChooser.setDefaultOption("First Ball", new FirstBallAuto(swerve, arm, shooter, intake, vision, loader, turret, turretLights, calculator));
         autonChooser.addOption("Triangle Auto", new TriangleAuto(swerve, arm, intake, shooter, vision, loader, turret, turretLights, calculator));
         autonChooser.addOption("Console Auto", new ConsoleAuto(swerve, arm, shooter, intake, vision, loader, turret, turretLights,  calculator));
@@ -242,7 +242,7 @@ public class PrimaryRobotContainer implements RobotContainer{
 
 
     void resetShooting(){
-        if (shooter.getCurrentCommand() != null){
+        if (shooter.getCurrentCommand() != null) {
             shooter.getCurrentCommand().cancel();
         }
         shooter.setSpeed(0);
@@ -250,7 +250,7 @@ public class PrimaryRobotContainer implements RobotContainer{
         turret.setEnabled(true);
     }
 
-    void resetLights(){
+    void resetLights() {
         turretLights.setCurrentRoutine(defaultRoutine);
     }
 
