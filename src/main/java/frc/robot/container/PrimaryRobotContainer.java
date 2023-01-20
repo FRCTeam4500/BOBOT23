@@ -63,7 +63,7 @@ public class PrimaryRobotContainer implements RobotContainer{
     private Intake intake = HardwareIntakeFactory.makeIntake();
     private Loader loader = HardwareLoaderFactory.makeLoader();
     private Shooter shooter = HardwareShooterFactory.makeShooter();
-    //private PathFollowingSwerve swerve = HardwareSwerveFactory.makeSwerve();
+    private PathFollowingSwerve swerve = HardwareSwerveFactory.makeSwerve();
     private Turret turret = HardwareTurretFactory.makeTurret();
     private Vision vision = HardwareVisionFactory.makeVision();
     private CameraImpl camOne = HardwareCameraFactory.makeCameraInstance();
@@ -107,7 +107,7 @@ public class PrimaryRobotContainer implements RobotContainer{
     public PrimaryRobotContainer(){
         configureControls();
         configureClimber();
-        //configureSwerve();
+        configureSwerve();
         configureIntakeAndCameraAndArm();
         configureShooting();
         // configureAutonomous();
@@ -142,7 +142,7 @@ public class PrimaryRobotContainer implements RobotContainer{
 
     }
 
-    /*void configureSwerve() {
+    void configureSwerve() {
         swerveCommand = new TriModeSwerveCommand(swerve, driveStick, info, vision, turret, messages);
         swerveCommand.controlMode = ControlMode.FieldCentric;
 
@@ -171,7 +171,7 @@ public class PrimaryRobotContainer implements RobotContainer{
         calculator = new PolarVelocityCalculator(swerve, vision, turret);
         Shuffleboard.getTab("Swerve").add("Polar Calulator", calculator);
 
-    }*/
+    }
 
     void configureIntakeAndCameraAndArm() {
         intakeButton.toggleOnTrue(new ArmSetAngleCommand(arm, ArmConstants.ARM_DOWN_ANGLE)
