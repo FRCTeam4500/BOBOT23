@@ -110,7 +110,7 @@ public class PrimaryRobotContainer implements RobotContainer{
         configureSwerve();
         configureIntakeAndCameraAndArm();
         configureShooting();
-        configureAutonomous();
+        // configureAutonomous();
         // configureLights();
     }
 
@@ -231,14 +231,14 @@ public class PrimaryRobotContainer implements RobotContainer{
         Shuffleboard.getTab("Light").add("light", turretLights);
     }
 
-    void configureAutonomous() {
+    /*void configureAutonomous() {
         autonChooser.setDefaultOption("First Ball", new FirstBallAuto(swerve, arm, shooter, intake, vision, loader, turret, turretLights, calculator));
         autonChooser.addOption("Triangle Auto", new TriangleAuto(swerve, arm, intake, shooter, vision, loader, turret, turretLights, calculator));
         autonChooser.addOption("Console Auto", new ConsoleAuto(swerve, arm, shooter, intake, vision, loader, turret, turretLights,  calculator));
         autonChooser.addOption("Second Ball", new SecondBallAuto(swerve, arm, shooter, intake, vision, loader, turret, turretLights, calculator));
         autonChooser.addOption("Third Ball", new ThirdBallAuto(swerve, arm, shooter, intake, vision, loader, turret, turretLights, calculator));
         Shuffleboard.getTab("Driver Controls").add("Autonomous Route", autonChooser);
-    }
+    }*/
 
 
     void resetShooting(){
