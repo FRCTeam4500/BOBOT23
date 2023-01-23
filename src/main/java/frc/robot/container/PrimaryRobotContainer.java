@@ -3,6 +3,7 @@ package frc.robot.container;
 
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonObjectFormatVisitor;
 
+import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -82,6 +83,8 @@ public class PrimaryRobotContainer implements RobotContainer{
     private JoystickButton resetGyro = new JoystickButton(driveStick, 10);
     private JoystickButton limitSwerveSpeed = new JoystickButton(driveStick, 2);
 
+    private JoystickButton noForwardButton = new JoystickButton(driveStick, 9);
+
     private Joystick controlStick = new Joystick(1);
 
     private JoystickButton intakeButton = new JoystickButton(controlStick, 1);
@@ -160,6 +163,9 @@ public class PrimaryRobotContainer implements RobotContainer{
 
         limitSwerveSpeed.toggleOnTrue(new InstantCommand(() -> {swerveCommand.limitSpeed = true; turretLights.setCurrentRoutine(Lights.Routines.bigblueorange);}));
         limitSwerveSpeed.toggleOnFalse(new InstantCommand(() -> {swerveCommand.limitSpeed = false; resetLights();}));
+
+        noForwardButton.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.RobotCentric; swerveCommand.noForward = true;}));
+        noForwardButton.toggleOnFalse(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.FieldCentric; swerveCommand.noForward = false;}));
 
         resetGyro.toggleOnTrue(new InstantCommand(() -> {swerve.resetRobotAngle();}));
 
