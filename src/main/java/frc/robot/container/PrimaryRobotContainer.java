@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.autonomous.routines.*;
 import frc.robot.dashboard.DashboardMessageDisplay;
 import frc.robot.dashboard.DashboardNumberDisplay;
@@ -82,6 +83,16 @@ public class PrimaryRobotContainer implements RobotContainer{
     private JoystickButton alignSwerveReverse = new JoystickButton(driveStick, 7);
     private JoystickButton resetGyro = new JoystickButton(driveStick, 10);
     private JoystickButton limitSwerveSpeed = new JoystickButton(driveStick, 2);
+    private JoystickButton noForwardButton = new JoystickButton(driveStick, 9);
+
+    private POVButton uPad = new POVButton(driveStick, 0);
+    private POVButton urPad = new POVButton(driveStick, 45);
+    private POVButton rPad = new POVButton(driveStick, 90);
+    private POVButton drPad = new POVButton(driveStick, 135);
+    private POVButton dPad = new POVButton(driveStick, 180);
+    private POVButton dlPad = new POVButton(driveStick, 225);
+    private POVButton lPad = new POVButton(driveStick, 270);
+    private POVButton ulPad = new POVButton(driveStick, 315);
 
     private JoystickButton noForwardButton = new JoystickButton(driveStick, 9);
 
@@ -155,6 +166,9 @@ public class PrimaryRobotContainer implements RobotContainer{
         lockSwerveRotationButton.toggleOnTrue(new InstantCommand(() -> {swerveCommand.lockRotation = true; turretLights.setCurrentRoutine(Lights.Routines.stopblueorange);}));
         lockSwerveRotationButton.toggleOnFalse(new InstantCommand(() -> {swerveCommand.lockRotation = false; resetLights();}));
 
+        noForwardButton.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.RobotCentric; swerveCommand.noForward = true;}));
+        noForwardButton.toggleOnFalse(new InstantCommand(() -> {swerveCommand.noForward = false; swerveCommand.controlMode = ControlMode.FieldCentric;}));
+
         alignSwerveToAngle.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 0;}));
         alignSwerveToAngle.toggleOnFalse(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.FieldCentric;}));
 
@@ -168,6 +182,15 @@ public class PrimaryRobotContainer implements RobotContainer{
         noForwardButton.toggleOnFalse(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.FieldCentric; swerveCommand.noForward = false;}));
 
         resetGyro.toggleOnTrue(new InstantCommand(() -> {swerve.resetRobotAngle();}));
+
+        uPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 0;}));
+        urPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 45;}));
+        rPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 90;}));
+        drPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 135;}));
+        dPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 180;}));
+        dlPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 0;}));
+        lPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 0;}));
+        ulPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 0;}));
 
 
         swerve.setDefaultCommand(swerveCommand);
@@ -247,7 +270,7 @@ public class PrimaryRobotContainer implements RobotContainer{
     }
 
 
-    void resetShooting(){
+    void resetShooting() {
         if (shooter.getCurrentCommand() != null) {
             shooter.getCurrentCommand().cancel();
         }
@@ -260,7 +283,7 @@ public class PrimaryRobotContainer implements RobotContainer{
         turretLights.setCurrentRoutine(defaultRoutine);
     }
 
-    public Command getAutonomousCommand(){
+    public Command getAutonomousCommand() {
         return autonChooser.getSelected();
     }
     @Override

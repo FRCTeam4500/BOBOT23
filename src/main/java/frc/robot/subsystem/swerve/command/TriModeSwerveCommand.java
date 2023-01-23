@@ -82,7 +82,6 @@ public class TriModeSwerveCommand extends CommandBase implements Sendable {
             ySpeed = 0;
             zSpeed = 0;
             xSpeed = ceiling(xSpeed, limitedSpeed);
-        }
         switch (controlMode){
             case FieldCentric:
                 moveFieldCentric(xSpeed, ySpeed, zSpeed);
