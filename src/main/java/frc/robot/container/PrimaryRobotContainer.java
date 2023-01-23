@@ -84,14 +84,14 @@ public class PrimaryRobotContainer implements RobotContainer{
     private JoystickButton limitSwerveSpeed = new JoystickButton(driveStick, 2);
     private JoystickButton noForwardButton = new JoystickButton(driveStick, 9);
 
-    private POVButton uPad = new POVButton(driveStick, 0);
-    private POVButton urPad = new POVButton(driveStick, 45);
-    private POVButton rPad = new POVButton(driveStick, 90);
-    private POVButton drPad = new POVButton(driveStick, 135);
-    private POVButton dPad = new POVButton(driveStick, 180);
-    private POVButton dlPad = new POVButton(driveStick, 225);
-    private POVButton lPad = new POVButton(driveStick, 270);
-    private POVButton ulPad = new POVButton(driveStick, 315);
+    // private POVButton uPad = new POVButton(driveStick, 0);
+    // private POVButton urPad = new POVButton(driveStick, 45);
+    // private POVButton rPad = new POVButton(driveStick, 90);
+    // private POVButton drPad = new POVButton(driveStick, 135);
+    // private POVButton dPad = new POVButton(driveStick, 180);
+    // private POVButton dlPad = new POVButton(driveStick, 225);
+    // private POVButton lPad = new POVButton(driveStick, 270);
+    // private POVButton ulPad = new POVButton(driveStick, 315);
 
     private Joystick controlStick = new Joystick(1);
 
@@ -164,7 +164,7 @@ public class PrimaryRobotContainer implements RobotContainer{
         lockSwerveRotationButton.toggleOnFalse(new InstantCommand(() -> {swerveCommand.lockRotation = false; resetLights();}));
 
         noForwardButton.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.RobotCentric; swerveCommand.noForward = true;}));
-        noForwardButton.toggleOnFalse(new InstantCommand(() -> {swerveCommand.noForward = false; swerveCommand.controlMode = ControlMode.FieldCentric;}));
+        noForwardButton.toggleOnFalse(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.FieldCentric; swerveCommand.noForward = false;}));
 
         alignSwerveToAngle.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 0;}));
         alignSwerveToAngle.toggleOnFalse(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.FieldCentric;}));
@@ -177,14 +177,14 @@ public class PrimaryRobotContainer implements RobotContainer{
 
         resetGyro.toggleOnTrue(new InstantCommand(() -> {swerve.resetRobotAngle();}));
 
-        uPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 0;}));
-        urPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 45;}));
-        rPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 90;}));
-        drPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 135;}));
-        dPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 180;}));
-        dlPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 0;}));
-        lPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 0;}));
-        ulPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 0;}));
+        // uPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 0;}));
+        // urPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 45;}));
+        // rPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 90;}));
+        // drPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 135;}));
+        // dPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 180;}));
+        // dlPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 0;}));
+        // lPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 0;}));
+        // ulPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 0;}));
 
 
         swerve.setDefaultCommand(swerveCommand);
