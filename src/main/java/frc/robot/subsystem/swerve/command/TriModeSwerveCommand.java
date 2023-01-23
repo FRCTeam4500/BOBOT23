@@ -45,6 +45,7 @@ public class TriModeSwerveCommand extends CommandBase implements Sendable {
 
     public boolean lockRotation = false;
     public boolean limitSpeed = false;
+    public boolean noForward = false;
     public double targetAngle = 0;
 
     private double limitedSpeed = .75;
@@ -74,8 +75,14 @@ public class TriModeSwerveCommand extends CommandBase implements Sendable {
             ySpeed = ceiling(ySpeed, limitedSpeed);
             zSpeed = ceiling(zSpeed, limitedSpeed);
         }
-        if (lockRotation)
+        if (lockRotation) {
             zSpeed = 0;
+        }
+        if (noForward) {
+            ySpeed = 0;
+            zSpeed = 0;
+            xSpeed = ceiling(xSpeed, limitedSpeed);
+        }        
         switch (controlMode){
             case FieldCentric:
                 moveFieldCentric(xSpeed, ySpeed, zSpeed);
