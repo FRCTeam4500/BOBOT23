@@ -14,7 +14,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 /**
  * Widget which displays a queue of messages on shuffleboard.
  */
-public class DashboardMessageDisplay extends CommandBase implements Sendable {
+public class DashboardMessageDisplay extends CommandBase {
     private List<Pair<Object,Integer>> cooldownList = new ArrayList<Pair<Object, Integer>>();
     private Queue<String> messages;
     private int cooldown;

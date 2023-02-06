@@ -4,6 +4,7 @@ package frc.robot.container;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonObjectFormatVisitor;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -104,6 +105,8 @@ public class PrimaryRobotContainer implements RobotContainer{
     private JoystickButton climberZero = new JoystickButton(controlStick, 6);
     private JoystickButton climberUp = new JoystickButton(controlStick, 7);
     private JoystickButton climberClimb = new JoystickButton(controlStick, 5);
+
+    private JoystickButton noTurret = new JoystickButton(controlStick, 8);
     
     private DashboardMessageDisplay messages = new DashboardMessageDisplay(15, 50);
 
@@ -114,6 +117,9 @@ public class PrimaryRobotContainer implements RobotContainer{
 
     //private Lights.Routines defaultRoutine = Lights.Routines.blueorange;
     private Lights.Routines defaultRoutine = Lights.Routines.rainbow;
+
+    boolean isPlacing = false;
+    boolean isIntaking = false;
 
     public PrimaryRobotContainer(){
         configureControls();
@@ -135,6 +141,14 @@ public class PrimaryRobotContainer implements RobotContainer{
         Shuffleboard.getTab("Driver Controls").add("Driver Controls", info);
         Shuffleboard.getTab("Driver Controls").add("Messages", messages);
         //Shuffleboard.getTab("Driver Controls").add("Intake Camera", camera);
+
+        Shuffleboard.getTab("Driver Controls")
+                .add("Placing", isPlacing)
+                .withWidget(BuiltInWidgets.kBooleanBox);
+
+        Shuffleboard.getTab("Driver Controls")
+                .add("Intaking", isIntaking)
+                .withWidget(BuiltInWidgets.kBooleanBox);
     }
 
     
@@ -147,9 +161,21 @@ public class PrimaryRobotContainer implements RobotContainer{
 
         climberZero.toggleOnTrue(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_ZERO_ANGLE));
 
-        climberUp.toggleOnTrue(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_UP_ANGLE).alongWith(new InstantCommand(() -> {turret.setEnabled(false);})));
+        climberUp.toggleOnTrue(
+                new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_UP_ANGLE)
+                        .alongWith(new InstantCommand(() -> isPlacing = true))
+                        .alongWith(new WaitCommand(2))
+                        .andThen(new InstantCommand(() -> isPlacing = false))
+                        .alongWith(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_ZERO_ANGLE))
+        );
 
-        climberClimb.toggleOnTrue(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_CLIMB_ANGLE));
+        climberClimb.toggleOnTrue(
+                new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_CLIMB_ANGLE)
+                        .alongWith(new InstantCommand(() -> {isIntaking = true;}))
+                        .alongWith(new WaitCommand(1.5))
+                        .andThen(new InstantCommand(() -> {isIntaking = false;}))
+                        .alongWith(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_ZERO_ANGLE))
+        );
 
     }
 
@@ -228,6 +254,8 @@ public class PrimaryRobotContainer implements RobotContainer{
         //Automated shooting
         shootButton.toggleOnTrue(new AutomatedShootingCommand(shooter, vision, loader, turret, calculator).alongWith(new InstantCommand(() -> {swerveCommand.limitSpeed = true;})));
         shootButton.toggleOnFalse(new InstantCommand(() -> {resetShooting(); swerveCommand.limitSpeed = false;}));
+
+        noTurret.toggleOnTrue(new InstantCommand(() -> {turret.setEnabled(false);}));
 
 
         //Run shooter and loader in reverse

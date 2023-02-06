@@ -12,6 +12,7 @@ public class ClimbToHighBar extends ParallelCommandGroup {
     Climber climber;
 
     public ClimbToHighBar(Climber climber){
+
         this.climber = climber;
         
         /**addCommands(
