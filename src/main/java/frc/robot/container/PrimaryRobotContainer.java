@@ -146,8 +146,6 @@ public class PrimaryRobotContainer implements RobotContainer{
         swerveCommand = new TriModeSwerveCommand(swerve, driveStick, info, vision, turret, messages);
         swerveCommand.controlMode = ControlMode.FieldCentric;
 
-        balanceButton.toggleOnTrue(new BalanceCommmand(swerve, swerveCommand));
-
         //switchDriveModeRobotCentric.toggleOnTrue(() -> swerveCommand.controlMode = ControlMode.RobotCentric; new InstantCommand(turretLights.setCurrentRoutine(Lights.Routines.blueorangereverse);));
         //switchDriveModeRobotCentric.toggleOnFalse(() -> {swerveCommand.controlMode = ControlMode.FieldCentric; resetLights();});
 

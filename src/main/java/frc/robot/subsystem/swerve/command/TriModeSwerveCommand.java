@@ -120,31 +120,6 @@ public class TriModeSwerveCommand extends CommandBase implements Sendable {
         return value;
     }
 
-     public static class BalanceCommmand extends CommandBase {
-
-            private OdometricSwerve swerve;
-            private SwerveCommand swerveCommand;
-            private AHRSAngleGetterComponent gyro = new AHRSAngleGetterComponent(I2C.Port.kMXP);
-
-            public BalanceCommmand(OdometricSwerve swerve, SwerveCommand swerveCommand) {
-                this.swerve = swerve;
-                this.swerveCommand = swerveCommand;
-                swerveCommand.controlMode = ControlMode.AlignToAngle; 
-                swerveCommand.targetAngle = 0;
-                addRequirements(swerve);
-            }
-
-            public void execute() {
-                while (Math.abs(gyro.getPitch()) > Math.toRadians(2)){ //getPitch() returns the angle in radians, not degrees
-                    swerveCommand.moveRobotCentric((Math.toDegrees(gyro.getPitch())-2)/10,0.0,0.0);
-                }
-                swerveCommand.moveRobotCentric(0,0,0);
-            }
-            public void initSendable(SendableBuilder builder){
-                builder.addDoubleProperty("Robot Pitch", gyro::getPitch,null);
-            }
-        }
-
     public void initSendable(SendableBuilder builder){
         builder.addStringProperty("Drive Mode", () -> {
             switch (controlMode) {
