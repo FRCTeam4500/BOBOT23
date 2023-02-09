@@ -4,11 +4,13 @@ package frc.robot.container;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonObjectFormatVisitor;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.autonomous.routines.*;
 import frc.robot.dashboard.DashboardMessageDisplay;
 import frc.robot.dashboard.DashboardNumberDisplay;
@@ -81,6 +83,16 @@ public class PrimaryRobotContainer implements RobotContainer{
     private JoystickButton alignSwerveReverse = new JoystickButton(driveStick, 7);
     private JoystickButton resetGyro = new JoystickButton(driveStick, 10);
     private JoystickButton limitSwerveSpeed = new JoystickButton(driveStick, 2);
+    private JoystickButton noForwardButton = new JoystickButton(driveStick, 9);
+
+    // private POVButton uPad = new POVButton(driveStick, 0);
+    // private POVButton urPad = new POVButton(driveStick, 45);
+    // private POVButton rPad = new POVButton(driveStick, 90);
+    // private POVButton drPad = new POVButton(driveStick, 135);
+    // private POVButton dPad = new POVButton(driveStick, 180);
+    // private POVButton dlPad = new POVButton(driveStick, 225);
+    // private POVButton lPad = new POVButton(driveStick, 270);
+    // private POVButton ulPad = new POVButton(driveStick, 315);
 
     private Joystick controlStick = new Joystick(1);
 
@@ -93,6 +105,8 @@ public class PrimaryRobotContainer implements RobotContainer{
     private JoystickButton climberZero = new JoystickButton(controlStick, 6);
     private JoystickButton climberUp = new JoystickButton(controlStick, 7);
     private JoystickButton climberClimb = new JoystickButton(controlStick, 5);
+
+    private JoystickButton noTurret = new JoystickButton(controlStick, 8);
     
     private DashboardMessageDisplay messages = new DashboardMessageDisplay(15, 50);
 
@@ -103,6 +117,9 @@ public class PrimaryRobotContainer implements RobotContainer{
 
     //private Lights.Routines defaultRoutine = Lights.Routines.blueorange;
     private Lights.Routines defaultRoutine = Lights.Routines.rainbow;
+
+    boolean isPlacing = false;
+    boolean isIntaking = false;
 
     public PrimaryRobotContainer(){
         configureControls();
@@ -124,6 +141,14 @@ public class PrimaryRobotContainer implements RobotContainer{
         Shuffleboard.getTab("Driver Controls").add("Driver Controls", info);
         Shuffleboard.getTab("Driver Controls").add("Messages", messages);
         //Shuffleboard.getTab("Driver Controls").add("Intake Camera", camera);
+
+        Shuffleboard.getTab("Driver Controls")
+                .add("Placing", isPlacing)
+                .withWidget(BuiltInWidgets.kBooleanBox);
+
+        Shuffleboard.getTab("Driver Controls")
+                .add("Intaking", isIntaking)
+                .withWidget(BuiltInWidgets.kBooleanBox);
     }
 
     
@@ -136,9 +161,21 @@ public class PrimaryRobotContainer implements RobotContainer{
 
         climberZero.toggleOnTrue(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_ZERO_ANGLE));
 
-        climberUp.toggleOnTrue(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_UP_ANGLE).alongWith(new InstantCommand(() -> {turret.setEnabled(false);})));
+        climberUp.toggleOnTrue(
+                new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_UP_ANGLE)
+                        .alongWith(new InstantCommand(() -> isPlacing = true))
+                        .alongWith(new WaitCommand(2))
+                        .andThen(new InstantCommand(() -> isPlacing = false))
+                        .alongWith(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_ZERO_ANGLE))
+        );
 
-        climberClimb.toggleOnTrue(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_CLIMB_ANGLE));
+        climberClimb.toggleOnTrue(
+                new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_CLIMB_ANGLE)
+                        .alongWith(new InstantCommand(() -> {isIntaking = true;}))
+                        .alongWith(new WaitCommand(1.5))
+                        .andThen(new InstantCommand(() -> {isIntaking = false;}))
+                        .alongWith(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_ZERO_ANGLE))
+        );
 
     }
 
@@ -152,6 +189,9 @@ public class PrimaryRobotContainer implements RobotContainer{
         lockSwerveRotationButton.toggleOnTrue(new InstantCommand(() -> {swerveCommand.lockRotation = true; turretLights.setCurrentRoutine(Lights.Routines.stopblueorange);}));
         lockSwerveRotationButton.toggleOnFalse(new InstantCommand(() -> {swerveCommand.lockRotation = false; resetLights();}));
 
+        noForwardButton.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.RobotCentric; swerveCommand.noForward = true;}));
+        noForwardButton.toggleOnFalse(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.FieldCentric; swerveCommand.noForward = false;}));
+
         alignSwerveToAngle.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 0;}));
         alignSwerveToAngle.toggleOnFalse(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.FieldCentric;}));
 
@@ -162,6 +202,15 @@ public class PrimaryRobotContainer implements RobotContainer{
         limitSwerveSpeed.toggleOnFalse(new InstantCommand(() -> {swerveCommand.limitSpeed = false; resetLights();}));
 
         resetGyro.toggleOnTrue(new InstantCommand(() -> {swerve.resetRobotAngle();}));
+
+        // uPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 0;}));
+        // urPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 45;}));
+        // rPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 90;}));
+        // drPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 135;}));
+        // dPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 180;}));
+        // dlPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 0;}));
+        // lPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 0;}));
+        // ulPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 0;}));
 
 
         swerve.setDefaultCommand(swerveCommand);
@@ -206,6 +255,8 @@ public class PrimaryRobotContainer implements RobotContainer{
         shootButton.toggleOnTrue(new AutomatedShootingCommand(shooter, vision, loader, turret, calculator).alongWith(new InstantCommand(() -> {swerveCommand.limitSpeed = true;})));
         shootButton.toggleOnFalse(new InstantCommand(() -> {resetShooting(); swerveCommand.limitSpeed = false;}));
 
+        noTurret.toggleOnTrue(new InstantCommand(() -> {turret.setEnabled(false);}));
+
 
         //Run shooter and loader in reverse
         Command reverseLoadCommand = new ParallelCommandGroup(new ShooterSpinUpCommand(shooter, new ShooterControl(20000,50)),
@@ -241,7 +292,7 @@ public class PrimaryRobotContainer implements RobotContainer{
     }*/
 
 
-    void resetShooting(){
+    void resetShooting() {
         if (shooter.getCurrentCommand() != null) {
             shooter.getCurrentCommand().cancel();
         }
@@ -254,7 +305,7 @@ public class PrimaryRobotContainer implements RobotContainer{
         turretLights.setCurrentRoutine(defaultRoutine);
     }
 
-    public Command getAutonomousCommand(){
+    public Command getAutonomousCommand() {
         return autonChooser.getSelected();
     }
     @Override

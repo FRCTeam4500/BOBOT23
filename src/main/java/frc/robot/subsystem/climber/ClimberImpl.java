@@ -6,7 +6,7 @@ import frc.robot.component.SmartMotorComponent;
 import frc.robot.subsystem.arm.ArmConstants;
 
 public class ClimberImpl implements Climber {
-    private SmartMotorComponent tiltMotor; //TODO: Find out how hooks for other bars work to implement
+    private SmartMotorComponent tiltMotor; //TODO: Find out how hooks for other bars work to implementz
     private double targetTiltAngle = 0; //TODO: Find what angle this is
 
     public ClimberImpl(SmartMotorComponent tiltMotor) {
@@ -15,7 +15,7 @@ public class ClimberImpl implements Climber {
 
     @Override
     public void setPosition(int position) {
-        targetTiltAngle = position;
+        targetTiltAngle = position; 
         tiltMotor.setAngle(position);
     }
 
@@ -23,8 +23,6 @@ public class ClimberImpl implements Climber {
     public void setTiltOutput(double output){
         tiltMotor.setOutput(output);
     }
-
-   
 
     @Override
     public void initSendable(SendableBuilder builder) {
