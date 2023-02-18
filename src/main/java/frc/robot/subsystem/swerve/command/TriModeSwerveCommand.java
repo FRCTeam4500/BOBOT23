@@ -35,10 +35,7 @@ public class TriModeSwerveCommand extends CommandBase implements Sendable {
     private Swerve swerve;
     private Joystick joystick;
     private ControllerInfo info;
-    private Vision vision;
-    private Turret turret;
     private DashboardMessageDisplay messageDisplay;
-    private PolarVelocityCalculator polarCalculator;
 
     private PIDController angleAdjustmentController;
     public ControlMode controlMode;
@@ -51,14 +48,11 @@ public class TriModeSwerveCommand extends CommandBase implements Sendable {
     private double limitedSpeed = .75;
 
 
-    public TriModeSwerveCommand(Swerve swerve, Joystick joystick, ControllerInfo controllerInfo, Vision vision, Turret turret, DashboardMessageDisplay messageDisplay){
+    public TriModeSwerveCommand(Swerve swerve, Joystick joystick, ControllerInfo controllerInfo, DashboardMessageDisplay messageDisplay){
         this.swerve = swerve;
         this.joystick = joystick;
         info = controllerInfo;
-        this.vision = vision;
-        this.turret = turret;
         this.messageDisplay = messageDisplay;
-        polarCalculator = new PolarVelocityCalculator(swerve, vision, turret);
         controlMode = ControlMode.FieldCentric; //default control mode is field-centric
         angleAdjustmentController = new PIDController(1,0,0);
         angleAdjustmentController.enableContinuousInput(-Math.PI, Math.PI);
@@ -145,5 +139,6 @@ public class TriModeSwerveCommand extends CommandBase implements Sendable {
         builder.addDoubleProperty("controller y", joystick::getY, null);
         builder.addDoubleProperty("controller z", joystick::getZ, null);
         builder.addBooleanProperty("Limit Speed", () -> {return limitSpeed;}, null);
+        
     }
 }

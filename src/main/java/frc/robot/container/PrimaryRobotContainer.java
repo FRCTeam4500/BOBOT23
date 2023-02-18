@@ -61,17 +61,17 @@ import frc.robot.subsystem.camera.Camera;
 public class PrimaryRobotContainer implements RobotContainer{
 
     //Initialize subsystems
-    private Arm arm = HardwareArmFactory.makeArm();
-    private Intake intake = HardwareIntakeFactory.makeIntake();
-    private Loader loader = HardwareLoaderFactory.makeLoader();
-    private Shooter shooter = HardwareShooterFactory.makeShooter();
+    // private Arm arm = HardwareArmFactory.makeArm();
+    // private Intake intake = HardwareIntakeFactory.makeIntake();
+    // private Loader loader = HardwareLoaderFactory.makeLoader();
+    // private Shooter shooter = HardwareShooterFactory.makeShooter();
     private PathFollowingSwerve swerve = HardwareSwerveFactory.makeSwerve();
-    private Turret turret = HardwareTurretFactory.makeTurret();
-    private Vision vision = HardwareVisionFactory.makeVision();
-    private CameraImpl camOne = HardwareCameraFactory.makeCameraInstance();
-    private Climber climber = HardwareClimberFactory.makeClimber();
+    // private Turret turret = HardwareTurretFactory.makeTurret();
+    // private Vision vision = HardwareVisionFactory.makeVision();
+    // private CameraImpl camOne = HardwareCameraFactory.makeCameraInstance();
+    // private Climber climber = HardwareClimberFactory.makeClimber();
     //private CameraInstance camera = HardwareCameraFactory.makeCameraInstance();
-    private Lights turretLights = new Lights(1, 0, 60);
+    // private Lights turretLights = new Lights(1, 0, 60);
 
     //Initialize Joysticks and Buttons
     private Joystick driveStick = new Joystick(0);
@@ -96,23 +96,23 @@ public class PrimaryRobotContainer implements RobotContainer{
 
     private Joystick controlStick = new Joystick(1);
 
-    private JoystickButton intakeButton = new JoystickButton(controlStick, 1);
-    private JoystickButton shootButton = new JoystickButton(controlStick, 4);
-    private JoystickButton reverseLoadButton = new JoystickButton(controlStick, 2);
-    private JoystickButton dumpButton = new JoystickButton(controlStick, 3);
+    // private JoystickButton intakeButton = new JoystickButton(controlStick, 1);
+    // private JoystickButton shootButton = new JoystickButton(controlStick, 4);
+    // private JoystickButton reverseLoadButton = new JoystickButton(controlStick, 2);
+    // private JoystickButton dumpButton = new JoystickButton(controlStick, 3);
 
 
-    private JoystickButton climberZero = new JoystickButton(controlStick, 6);
-    private JoystickButton climberUp = new JoystickButton(controlStick, 7);
-    private JoystickButton climberClimb = new JoystickButton(controlStick, 5);
+    // private JoystickButton climberZero = new JoystickButton(controlStick, 6);
+    // private JoystickButton climberUp = new JoystickButton(controlStick, 7);
+    // private JoystickButton climberClimb = new JoystickButton(controlStick, 5);
 
-    private JoystickButton noTurret = new JoystickButton(controlStick, 8);
+    // private JoystickButton noTurret = new JoystickButton(controlStick, 8);
     
     private DashboardMessageDisplay messages = new DashboardMessageDisplay(15, 50);
 
     private SendableChooser<Command> autonChooser = new SendableChooser<Command>();
 
-    private PolarVelocityCalculator calculator;
+    // private PolarVelocityCalculator calculator;
     private TriModeSwerveCommand swerveCommand;
 
     //private Lights.Routines defaultRoutine = Lights.Routines.blueorange;
@@ -123,10 +123,10 @@ public class PrimaryRobotContainer implements RobotContainer{
 
     public PrimaryRobotContainer(){
         configureControls();
-        configureClimber();
+        // configureClimber();
         configureSwerve();
-        configureIntakeAndCameraAndArm();
-        configureShooting();
+        // configureIntakeAndCameraAndArm();
+        // configureShooting();
         // configureAutonomous();
         // configureLights();
     }
@@ -142,52 +142,52 @@ public class PrimaryRobotContainer implements RobotContainer{
         Shuffleboard.getTab("Driver Controls").add("Messages", messages);
         //Shuffleboard.getTab("Driver Controls").add("Intake Camera", camera);
 
-        Shuffleboard.getTab("Driver Controls")
-                .add("Placing", isPlacing)
-                .withWidget(BuiltInWidgets.kBooleanBox);
+        // Shuffleboard.getTab("Driver Controls")
+        //         .add("Placing", isPlacing)
+        //         .withWidget(BuiltInWidgets.kBooleanBox);
 
-        Shuffleboard.getTab("Driver Controls")
-                .add("Intaking", isIntaking)
-                .withWidget(BuiltInWidgets.kBooleanBox);
+        // Shuffleboard.getTab("Driver Controls")
+        //         .add("Intaking", isIntaking)
+        //         .withWidget(BuiltInWidgets.kBooleanBox);
     }
 
     
     
 
-    void configureClimber() {
+    // void configureClimber() {
 
-        Shuffleboard.getTab("Climber").add("climber", climber);
+    //     Shuffleboard.getTab("Climber").add("climber", climber);
         
 
-        climberZero.toggleOnTrue(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_ZERO_ANGLE));
+    //     climberZero.toggleOnTrue(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_ZERO_ANGLE));
 
-        climberUp.toggleOnTrue(
-                new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_UP_ANGLE)
-                        .alongWith(new InstantCommand(() -> isPlacing = true))
-                        .alongWith(new WaitCommand(2))
-                        .andThen(new InstantCommand(() -> isPlacing = false))
-                        .alongWith(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_ZERO_ANGLE))
-        );
+    //     climberUp.toggleOnTrue(
+    //             new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_UP_ANGLE)
+    //                     .alongWith(new InstantCommand(() -> isPlacing = true))
+    //                     .alongWith(new WaitCommand(2))
+    //                     .andThen(new InstantCommand(() -> isPlacing = false))
+    //                     .alongWith(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_ZERO_ANGLE))
+    //     );
 
-        climberClimb.toggleOnTrue(
-                new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_CLIMB_ANGLE)
-                        .alongWith(new InstantCommand(() -> {isIntaking = true;}))
-                        .alongWith(new WaitCommand(1.5))
-                        .andThen(new InstantCommand(() -> {isIntaking = false;}))
-                        .alongWith(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_ZERO_ANGLE))
-        );
+    //     climberClimb.toggleOnTrue(
+    //             new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_CLIMB_ANGLE)
+    //                     .alongWith(new InstantCommand(() -> {isIntaking = true;}))
+    //                     .alongWith(new WaitCommand(1.5))
+    //                     .andThen(new InstantCommand(() -> {isIntaking = false;}))
+    //                     .alongWith(new ClimberSetAngleCommand(climber, ClimberConstants.CLIMBER_ZERO_ANGLE))
+    //     );
 
-    }
+    // }
 
     void configureSwerve() {
-        swerveCommand = new TriModeSwerveCommand(swerve, driveStick, info, vision, turret, messages);
+        swerveCommand = new TriModeSwerveCommand(swerve, driveStick, info, messages);
         swerveCommand.controlMode = ControlMode.FieldCentric;
 
-        //switchDriveModeRobotCentric.toggleOnTrue(() -> swerveCommand.controlMode = ControlMode.RobotCentric; new InstantCommand(turretLights.setCurrentRoutine(Lights.Routines.blueorangereverse);));
-        //switchDriveModeRobotCentric.toggleOnFalse(() -> {swerveCommand.controlMode = ControlMode.FieldCentric; resetLights();});
+        switchDriveModeRobotCentric.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.RobotCentric;})); 
+        switchDriveModeRobotCentric.toggleOnFalse(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.FieldCentric;}));
 
-        lockSwerveRotationButton.toggleOnTrue(new InstantCommand(() -> {swerveCommand.lockRotation = true; turretLights.setCurrentRoutine(Lights.Routines.stopblueorange);}));
-        lockSwerveRotationButton.toggleOnFalse(new InstantCommand(() -> {swerveCommand.lockRotation = false; resetLights();}));
+        lockSwerveRotationButton.toggleOnTrue(new InstantCommand(() -> {swerveCommand.lockRotation = true;}));
+        lockSwerveRotationButton.toggleOnFalse(new InstantCommand(() -> {swerveCommand.lockRotation = false;}));
 
         noForwardButton.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.RobotCentric; swerveCommand.noForward = true;}));
         noForwardButton.toggleOnFalse(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.FieldCentric; swerveCommand.noForward = false;}));
@@ -198,8 +198,8 @@ public class PrimaryRobotContainer implements RobotContainer{
         alignSwerveReverse.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = Math.PI;}));
         alignSwerveReverse.toggleOnFalse(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.FieldCentric;}));
 
-        limitSwerveSpeed.toggleOnTrue(new InstantCommand(() -> {swerveCommand.limitSpeed = true; turretLights.setCurrentRoutine(Lights.Routines.bigblueorange);}));
-        limitSwerveSpeed.toggleOnFalse(new InstantCommand(() -> {swerveCommand.limitSpeed = false; resetLights();}));
+        limitSwerveSpeed.toggleOnTrue(new InstantCommand(() -> {swerveCommand.limitSpeed = true;}));
+        limitSwerveSpeed.toggleOnFalse(new InstantCommand(() -> {swerveCommand.limitSpeed = false;}));
 
         resetGyro.toggleOnTrue(new InstantCommand(() -> {swerve.resetRobotAngle();}));
 
@@ -212,75 +212,74 @@ public class PrimaryRobotContainer implements RobotContainer{
         // lPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 0;}));
         // ulPad.toggleOnTrue(new InstantCommand(() -> {swerveCommand.controlMode = ControlMode.AlignToAngle; swerveCommand.targetAngle = 0;}));
 
-
         swerve.setDefaultCommand(swerveCommand);
         Shuffleboard.getTab("Swerve").add("Swerve", swerve);
         Shuffleboard.getTab("Swerve").add("Swerve Command", swerveCommand);
 
-        calculator = new PolarVelocityCalculator(swerve, vision, turret);
-        Shuffleboard.getTab("Swerve").add("Polar Calulator", calculator);
+        // calculator = new PolarVelocityCalculator(swerve, vision, turret);
+        // Shuffleboard.getTab("Swerve").add("Polar Calulator", calculator);
 
     }
 
-    void configureIntakeAndCameraAndArm() {
-        intakeButton.toggleOnTrue(new ArmSetAngleCommand(arm, ArmConstants.ARM_DOWN_ANGLE)
-                .alongWith(new IntakeRunCommand(intake, IntakeConstants.intakeRunSpeed)));
-        intakeButton.toggleOnFalse(
-            new ArmSetAngleCommand(arm, ArmConstants.ARM_UP_ANGLE).alongWith(
-            new IntakeRunCommand(intake, 0))
+    // void configureIntakeAndCameraAndArm() {
+    //     intakeButton.toggleOnTrue(new ArmSetAngleCommand(arm, ArmConstants.ARM_DOWN_ANGLE)
+    //             .alongWith(new IntakeRunCommand(intake, IntakeConstants.intakeRunSpeed)));
+    //     intakeButton.toggleOnFalse(
+    //         new ArmSetAngleCommand(arm, ArmConstants.ARM_UP_ANGLE).alongWith(
+    //         new IntakeRunCommand(intake, 0))
                         
-        );
+    //     );
 
-        // configure camera
-        //camOne.start();
+    //     // configure camera
+    //     //camOne.start();
         
         
-        Shuffleboard.getTab("Intake").add("Intake", intake);
-        Shuffleboard.getTab("Intake").add("Arm", arm);
-        //Shuffleboard.getTab("Intake").add("Intake Camera", camOne);
-    }
+    //     Shuffleboard.getTab("Intake").add("Intake", intake);
+    //     Shuffleboard.getTab("Intake").add("Arm", arm);
+    //     //Shuffleboard.getTab("Intake").add("Intake Camera", camOne);
+    // }
 
-    void configureShooting() {
-        turret.setDefaultCommand(new TurretDefaultCommand(turret, vision, calculator));
-        //shooter.setDefaultCommand(new ShooterContinuousRunCommand(shooter, () -> 0));
-        //loader.setDefaultCommand(new LoaderRunCommand(loader, 0));
+    // void configureShooting() {
+    //     turret.setDefaultCommand(new TurretDefaultCommand(turret, vision, calculator));
+    //     //shooter.setDefaultCommand(new ShooterContinuousRunCommand(shooter, () -> 0));
+    //     //loader.setDefaultCommand(new LoaderRunCommand(loader, 0));
 
-        //manual shooting
-        //ShooterControl control = new ShooterControl(10000, 50);
-        //Command shootCommand = new ManualShootingCommand(shooter, vision, loader, control);
-        //shootButton.whenPressed(shootCommand);
-        //shootButton.whenReleased(() -> {resetShooting();});
-        //Shuffleboard.getTab("Shooting").add("Shooter control", control);
-        //Automated shooting
-        shootButton.toggleOnTrue(new AutomatedShootingCommand(shooter, vision, loader, turret, calculator).alongWith(new InstantCommand(() -> {swerveCommand.limitSpeed = true;})));
-        shootButton.toggleOnFalse(new InstantCommand(() -> {resetShooting(); swerveCommand.limitSpeed = false;}));
+    //     //manual shooting
+    //     //ShooterControl control = new ShooterControl(10000, 50);
+    //     //Command shootCommand = new ManualShootingCommand(shooter, vision, loader, control);
+    //     //shootButton.whenPressed(shootCommand);
+    //     //shootButton.whenReleased(() -> {resetShooting();});
+    //     //Shuffleboard.getTab("Shooting").add("Shooter control", control);
+    //     //Automated shooting
+    //     shootButton.toggleOnTrue(new AutomatedShootingCommand(shooter, vision, loader, turret, calculator).alongWith(new InstantCommand(() -> {swerveCommand.limitSpeed = true;})));
+    //     shootButton.toggleOnFalse(new InstantCommand(() -> {resetShooting(); swerveCommand.limitSpeed = false;}));
 
-        noTurret.toggleOnTrue(new InstantCommand(() -> {turret.setEnabled(false);}));
+    //     noTurret.toggleOnTrue(new InstantCommand(() -> {turret.setEnabled(false);}));
 
 
-        //Run shooter and loader in reverse
-        Command reverseLoadCommand = new ParallelCommandGroup(new ShooterSpinUpCommand(shooter, new ShooterControl(20000,50)),
-                new LoaderSetOutputCommand(loader, -1));
-        reverseLoadButton.toggleOnTrue(reverseLoadCommand);
-        reverseLoadButton.toggleOnFalse(new InstantCommand(() -> {resetShooting();}));
+    //     //Run shooter and loader in reverse
+    //     Command reverseLoadCommand = new ParallelCommandGroup(new ShooterSpinUpCommand(shooter, new ShooterControl(20000,50)),
+    //             new LoaderSetOutputCommand(loader, -1));
+    //     reverseLoadButton.toggleOnTrue(reverseLoadCommand);
+    //     reverseLoadButton.toggleOnFalse(new InstantCommand(() -> {resetShooting();}));
 
-        Command dumpCommand = new DumpBallCommand(turret, shooter, vision, loader).alongWith(new InstantCommand(() -> turretLights.setCurrentRoutine(Lights.Routines.orangeflash)));
-        dumpButton.toggleOnTrue(dumpCommand);
-        dumpButton.toggleOnFalse(new InstantCommand(() -> {resetShooting(); resetLights();}));
+    //     Command dumpCommand = new DumpBallCommand(turret, shooter, vision, loader).alongWith(new InstantCommand(() -> turretLights.setCurrentRoutine(Lights.Routines.orangeflash)));
+    //     dumpButton.toggleOnTrue(dumpCommand);
+    //     dumpButton.toggleOnFalse(new InstantCommand(() -> {resetShooting(); resetLights();}));
 
-        //Shuffleboard
-        ShuffleboardTab tab = Shuffleboard.getTab("Shooting");
-        //tab
-        tab.add("Shooter", shooter);
-        tab.add("Turret", turret);
-        tab.add("Loader", loader);
-        tab.add("Distance", new DashboardNumberDisplay("Distance", () -> VisionDistanceCalculator.calculateDistance(vision)));
-    }
+    //     //Shuffleboard
+    //     ShuffleboardTab tab = Shuffleboard.getTab("Shooting");
+    //     //tab
+    //     tab.add("Shooter", shooter);
+    //     tab.add("Turret", turret);
+    //     tab.add("Loader", loader);
+    //     tab.add("Distance", new DashboardNumberDisplay("Distance", () -> VisionDistanceCalculator.calculateDistance(vision)));
+    // }
 
-    void configureLights() {
-        turretLights.setCurrentRoutine(Lights.Routines.blueorbit);
-        Shuffleboard.getTab("Light").add("light", turretLights);
-    }
+    // void configureLights() {
+    //     turretLights.setCurrentRoutine(Lights.Routines.blueorbit);
+    //     Shuffleboard.getTab("Light").add("light", turretLights);
+    // }
 
     /*void configureAutonomous() {
         autonChooser.setDefaultOption("First Ball", new FirstBallAuto(swerve, arm, shooter, intake, vision, loader, turret, turretLights, calculator));
@@ -292,18 +291,18 @@ public class PrimaryRobotContainer implements RobotContainer{
     }*/
 
 
-    void resetShooting() {
-        if (shooter.getCurrentCommand() != null) {
-            shooter.getCurrentCommand().cancel();
-        }
-        shooter.setSpeed(0);
-        loader.setOutput(0);
-        turret.setEnabled(true);
-    }
+    // void resetShooting() {
+    //     if (shooter.getCurrentCommand() != null) {
+    //         shooter.getCurrentCommand().cancel();
+    //     }
+    //     shooter.setSpeed(0);
+    //     loader.setOutput(0);
+    //     turret.setEnabled(true);
+    // }
 
-    void resetLights() {
-        turretLights.setCurrentRoutine(defaultRoutine);
-    }
+    // void resetLights() {
+    //     turretLights.setCurrentRoutine(defaultRoutine);
+    // }
 
     public Command getAutonomousCommand() {
         return autonChooser.getSelected();
@@ -314,8 +313,8 @@ public class PrimaryRobotContainer implements RobotContainer{
         if (auton != null){
             auton.cancel();
         }
-        resetShooting();
-        resetLights();
-        new ArmSetAngleCommand(arm, ArmConstants.ARM_UP_ANGLE).schedule(); //deploy the arm
+        // resetShooting();
+        // resetLights();
+        // new ArmSetAngleCommand(arm, ArmConstants.ARM_UP_ANGLE).schedule(); //deploy the arm
     }
 }
