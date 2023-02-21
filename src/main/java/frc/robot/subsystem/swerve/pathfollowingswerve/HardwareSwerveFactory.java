@@ -29,7 +29,7 @@ public class HardwareSwerveFactory {
 
 
     public static final double WHEEL_DIAMETER = 0.0762; // in meters
-    public static final double DRIVE_X_RIGHT_TRANSLATION = -0.2413; // distance from gyro to swerve
+    public static final double DRIVE_X_RIGHT_TRANSLATION = -0.2413; // distance from gyro to swerve _>NOTE: Right is negative!!!!
     public static final double DRIVE_X_LEFT_TRANSLATION = 0.2413; // front back translation of wheels
     public static final double DRIVE_Y_FRONT_TRANSLATION = 0.3175; // 8 inches from gyro?
     public static final double DRIVE_Y_BACK_TRANSLATION = -0.3175; // 16 inches
